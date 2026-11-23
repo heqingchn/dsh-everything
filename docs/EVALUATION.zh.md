@@ -106,13 +106,13 @@ const directory = await mkdtemp(join(tmpdir(), 'dsh-at-file-everything-'))
 | 提示词有效性 | 盲测 subagent 复现"今天修改的 ts / eval 相关 / >100KB 日志"三个任务，三次全部走 `everything_search`，无一次 `recent` 误用、无一次 shell 替代检索 |
 | 多 agent 并发 | 3 个 agent × 3 次查询（共 9 次并发）全部成功、0 超时、结果完全一致；脚本压测 16 并发最慢请求 1.1 s |
 | 浅色主题 | 配置卡片与结果卡片在浅色主题下文字、边框均正常（截图为深色，浅色经人工确认） |
+| Everything 未运行 | `@` 补全完全为空——连当前目录的子目录都不列；`find_files` / `everything_search` 抛出指明原因的错误。本包是 `fileReferences` 的唯一提供者，没有遍历回退，这是显式取舍（见 README「已知限制」） |
 
 ## 剩余缺口
 
 仍未验证，不当作已完成：
 
-1. **Everything 未运行时的真实 UI 行为。** 错误路径在单元测试与卡片渲染里覆盖，但没有在真机上停掉 Everything 观察卡片与 `@` 的实际表现。
-2. **`path:"A" \| path:"B"` 的多目录组合未触发。** 盲测任务都只涉及一个目录。
+1. **`path:"A" \| path:"B"` 的多目录组合未触发。** 盲测任务都只涉及一个目录。
 
 ## 使用建议
 
