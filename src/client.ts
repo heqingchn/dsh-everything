@@ -373,7 +373,11 @@ const INPUT = {
   fontSize: '12.5px',
   lineHeight: 1.55,
   color: 'var(--dsw-alias-label-primary, #1f2329)',
-  background: 'var(--dsw-alias-bg-l1, #ffffff)',
+  // `bg-base`, not the `bg-l1` this card used to name: that alias does not exist,
+  // so the fallback painted a white box while `label-primary` stayed light in the
+  // dark theme — typed text was invisible. `test/theme.test.js` now checks every
+  // alias this half uses against the shipped theme.
+  background: 'var(--dsw-alias-bg-base, #ffffff)',
   border: '1px solid var(--dsw-alias-border-l2, #d5d8dd)',
   borderRadius: '8px',
   padding: '8px 10px',
@@ -397,7 +401,10 @@ const BUTTON = {
   padding: '6px 14px',
   borderRadius: '8px',
   border: '1px solid var(--dsw-alias-border-l2, #d5d8dd)',
-  background: 'var(--dsw-alias-settings-card-fill, #f7f8fa)',
+  // `bg-layer-2`, not `settings-card-fill`: that alias does not exist either, and a
+  // light-grey fallback under light `label-primary` text repeated the invisible-text
+  // bug on every button.
+  background: 'var(--dsw-alias-bg-layer-2, #f7f8fa)',
   color: 'var(--dsw-alias-label-primary, #1f2329)',
   cursor: 'pointer',
 }
