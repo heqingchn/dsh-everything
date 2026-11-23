@@ -133,6 +133,20 @@ index.ts ── worker_threads ──▶ sdk-worker.cjs
 
 `node scripts/bench-query.mjs --iterations 20` 可复现。差距主要来自进程启动与 CSV 导出往返；纯索引查询本身约 70 ms。
 
+### 并发
+
+一个 worker 串行处理所有请求，所以第 N 个并发请求要等前面 N−1 个。`node scripts/bench-concurrency.mjs` 实测（同查询、每页 300）：
+
+| 并发 | 总耗时 | 最慢请求 |
+|---:|---:|---:|
+| 1 | 68 ms | 68 ms |
+| 2 | 143 ms | 143 ms |
+| 4 | 274 ms | 274 ms |
+| 8 | 559 ms | 559 ms |
+| 16 | 1,123 ms | 1,123 ms |
+
+排队是线性的，但 16 层并发的最慢请求仍远低于 `queryTimeoutMs` 的默认 10 s；3 个 agent 各跑 3 次查询的真实并发验证中，9 次全部成功、结果一致。真实会话里工具调用之间隔着模型推理，实际队列深度通常只有 1–2 层。
+
 ## 上下文占用
 
 每次请求固定占用：
