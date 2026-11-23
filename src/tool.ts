@@ -49,11 +49,7 @@ export const TOOL_NAME = 'find_files'
  * unconditionally whenever the tool registers, because a user should never have
  * to know that a prompt needs configuring for the tool to be found at all.
  */
-export const FILE_SEARCH_PROMPT = `\`find_files\` answers "where is this file" from Everything's live machine-wide index and returns absolute paths. It takes a plain file or folder name, or any contiguous fragment of one, with optional \`*\` and \`?\` wildcards — not a query dialect — and is the fastest way to locate a file by name, including files outside the workspace or under folders a workspace walk would skip.
-
-It searches names only, never contents: use \`grep\` for contents. Pass \`path\` to confine the search to one folder and its subfolders, and \`limit\` to page; when the result says more matched, raise \`limit\` or narrow the query rather than assuming the list is complete.
-
-\`glob\` only walks the workspace and honors ignore rules. If the file may be outside the workspace, or you are matching a name rather than a directory path, use \`find_files\`.`
+export const FILE_SEARCH_PROMPT = `Use \`find_files\` for plain name lookups; it is fastest and finds files outside the workspace or skipped by workspace walks. \`glob\` walks only the workspace and honors ignore rules, so use it for directory-path walks, not name matching. Use \`grep\` for contents.`
 
 /** Most matches one call may return. Past this the page buries the caller. */
 export const MAX_LIMIT = 500
@@ -207,30 +203,29 @@ export function buildFindFilesTool(host: FindFilesHost) {
   return defineTool({
     name: TOOL_NAME,
     description:
-      'Find files or folders anywhere on this machine by name, from the local Everything index. '
-      + 'Takes a plain name or fragment — no query syntax. Names only, never contents; use grep for contents.',
+      "Search names via Everything's live machine-wide index; return absolute paths. Never searches contents (`grep` does).",
     parameters: {
       query: {
         type: 'string',
         description:
-          'File or folder name, or any contiguous fragment of one. `*` and `?` are wildcards; use `*` or omit it to list a folder.',
+          'Plain file/folder name or contiguous fragment; supports `*`/`?`, not query syntax. Use `*` or omit to list a folder.',
       },
       path: {
         type: 'string',
         description:
-          'Absolute folder to confine the search to, including subfolders. Omit to search every indexed drive.',
+          'Optional absolute folder; search it and descendants. Omit for all indexed drives.',
       },
       foldersOnly: {
         type: 'boolean',
-        description: 'Return only folders.',
+        description: 'Return folders only.',
       },
       filesOnly: {
         type: 'boolean',
-        description: 'Return only files.',
+        description: 'Return files only.',
       },
       limit: {
         type: 'integer',
-        description: `Maximum entries (default ${String(DEFAULT_LIMIT)}, at most ${String(MAX_LIMIT)}).`,
+        description: `Maximum results (default ${String(DEFAULT_LIMIT)}, max ${String(MAX_LIMIT)}).`,
       },
     },
     output: {

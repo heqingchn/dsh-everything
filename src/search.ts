@@ -44,11 +44,9 @@ export const SEARCH_TOOL_NAME = 'everything_search'
  * feature blurbs. It names the common filters explicitly: a model that has never
  * seen Everything's dialect will otherwise fall back to `glob`.
  */
-export const EVERYTHING_SYNTAX_PROMPT = `\`everything_search\` takes Everything's own query syntax when a name is not enough: \`ext:ts\`, \`size:>100kb\`, \`dm:today\`, \`dm:>2026-11-01\`, \`folder:node_modules\`, \`file:*.log\`; space is AND, \`|\` is OR, a leading \`!\` excludes. \`regex:\` works but scans the whole index and can take seconds — prefer the indexed filters.
+export const EVERYTHING_SYNTAX_PROMPT = `Use \`everything_search\` for Everything query syntax and metadata filters. For date, size, or extension searches, use \`dm:\`, \`size:\`, or \`ext:\` instead of shell tree walks. Prefer indexed filters to \`regex:\` (scans the whole index and may take seconds). If \`find_files\` reports more matches, increase \`limit\` or narrow the query; don't assume results are complete.
 
-To find files changed today, above a size, or of one extension, use this tool with \`dm:\`/\`size:\`/\`ext:\` — do not walk the tree with shell commands. Combine several folders with \`|\` (\`path:"A" | path:"B"\`). For newest first use \`sort:"date-modified"\` with \`descending:true\`; \`recent\` sorts by the filesystem's recently-changed time, not by modification time.
-
-Use \`find_files\` for a plain name lookup; use this tool when those filters are what you mean.`
+For newest modified first, use \`sort:"date-modified"\` with \`descending:true\`; \`recent\` sorts by filesystem recently-changed time, not modification time.`
 
 /**
  * Everything sort constants (ascending; descending is the next value).
@@ -197,33 +195,32 @@ export function buildEverythingSearchTool(host: EverythingSearchHost) {
   return defineTool({
     name: SEARCH_TOOL_NAME,
     description:
-      'Search the local Everything index with its own query syntax: filter by extension, size, date or folder; '
-      + 'combine terms with AND/OR/NOT. Use it when a plain name lookup is not enough — `find_files` is faster for that. '
-      + 'Names and metadata only, never contents.',
+      'Search the local Everything index by query syntax for name/metadata filters; never contents. '
+      + 'Use for advanced queries; `find_files` is faster for plain names.',
     parameters: {
       query: {
         type: 'string',
         description:
-          'Everything expression, e.g. "ext:ts size:>100kb dm:today". Space is AND, | is OR, a leading ! excludes.',
+          'Everything expression, e.g. `ext:ts`, `size:>100kb`, `dm:today`/`dm:>2026-11-01`, `folder:node_modules`, `file:*.log`. Spaces=AND, `|`=OR, leading `!`=exclude. Combine folders with `path:"A" | path:"B"`. Supports `regex:`.',
         required: true,
       },
       path: {
         type: 'string',
         description:
-          'Absolute folder to confine the search to, including subfolders. Omit to search every indexed drive.',
+          'Optional absolute folder; search it and descendants. Omit for all indexed drives.',
       },
       limit: {
         type: 'integer',
-        description: `Maximum entries (default ${String(DEFAULT_LIMIT)}, at most ${String(MAX_LIMIT)}).`,
+        description: `Maximum results (default ${String(DEFAULT_LIMIT)}, max ${String(MAX_LIMIT)}).`,
       },
       sort: {
         type: 'string',
         enum: sortNames,
-        description: 'Sort order; defaults to name.',
+        description: 'Sort order (default: name); `date-modified` uses modification time, `recent` uses filesystem recently-changed time.',
       },
       descending: {
         type: 'boolean',
-        description: 'Reverse the sort order.',
+        description: 'Reverse sort order.',
       },
     },
     output: {
