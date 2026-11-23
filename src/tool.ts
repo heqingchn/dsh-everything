@@ -49,11 +49,11 @@ export const TOOL_NAME = 'find_files'
  * unconditionally whenever the tool registers, because a user should never have
  * to know that a prompt needs configuring for the tool to be found at all.
  */
-export const FILE_SEARCH_PROMPT = `\`find_files\` answers "where is this file" from Everything's live machine-wide index and returns absolute paths. It takes a plain file or folder name, or any contiguous fragment of one — no syntax — and is the fastest way to locate a file by name, including files outside the workspace or under folders a workspace walk would skip.
+export const FILE_SEARCH_PROMPT = `\`find_files\` answers "where is this file" from Everything's live machine-wide index and returns absolute paths. It takes a plain file or folder name, or any contiguous fragment of one, with optional \`*\` and \`?\` wildcards — not a query dialect — and is the fastest way to locate a file by name, including files outside the workspace or under folders a workspace walk would skip.
 
 It searches names only, never contents: use \`grep\` for contents. Pass \`path\` to confine the search to one folder and its subfolders, and \`limit\` to page; when the result says more matched, raise \`limit\` or narrow the query rather than assuming the list is complete.
 
-Prefer \`glob\` for a path pattern inside the workspace that must respect ignore rules.`
+\`glob\` only walks the workspace and honors ignore rules. If the file may be outside the workspace, or you are matching a name rather than a directory path, use \`find_files\`.`
 
 /** Most matches one call may return. Past this the page buries the caller. */
 export const MAX_LIMIT = 500
@@ -213,7 +213,7 @@ export function buildFindFilesTool(host: FindFilesHost) {
       query: {
         type: 'string',
         description:
-          'File or folder name, or any contiguous fragment of one. Case-insensitive. Use `*` or omit it to list a folder.',
+          'File or folder name, or any contiguous fragment of one. `*` and `?` are wildcards; use `*` or omit it to list a folder.',
       },
       path: {
         type: 'string',
