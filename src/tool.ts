@@ -49,7 +49,7 @@ export const TOOL_NAME = 'find_files'
  * unconditionally whenever the tool registers, because a user should never have
  * to know that a prompt needs configuring for the tool to be found at all.
  */
-export const FILE_SEARCH_PROMPT = `Use \`find_files\` for plain name lookups; it is fastest and finds files outside the workspace or skipped by workspace walks. If a \`find_files\` query with \`path\` finds nothing, retry without \`path\` — the file may be elsewhere on disk. \`glob\` walks only the workspace and honors ignore rules, so use it for directory-path walks, not name matching. Use \`grep\` for contents.`
+export const FILE_SEARCH_PROMPT = `Use \`find_files\` for plain name lookups; it is fastest and finds files outside the workspace or skipped by workspace walks. If a \`find_files\` query with \`path\` finds nothing, retry without \`path\` — the file may be elsewhere on disk. \`glob\` walks only the workspace and honors ignore rules, so use it for directory-path walks, not name matching. Use \`grep\` for contents. Several candidate folders, or a cache/build tree (gradle, maven, npm)? Look the name up without \`path\` — the index covers every drive, and one query beats looping over directories in shell.`
 
 /** Most matches one call may return. Past this the page buries the caller. */
 export const MAX_LIMIT = 500
