@@ -1,0 +1,102 @@
+{
+  "name": "dsh-everything",
+  "version": "0.1.0",
+  "description": "Everything-backed @file completion and find_files tool for DeepSeek Harness on Windows, queried in-process through the official Everything SDK",
+  "icon": "assets/icon-180.png",
+  "license": "MIT",
+  "type": "module",
+  "os": [
+    "win32"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "engines": {
+    "node": ">=22.19.0",
+    "dsh": ">=0.2.1-rc.2 <0.3.0-0"
+  },
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./config": {
+      "default": "./lib/config.js"
+    },
+    "./pure": {
+      "default": "./lib/pure.js"
+    },
+    "./tool": {
+      "default": "./lib/tool.js"
+    },
+    "./search": {
+      "default": "./lib/search.js"
+    },
+    "./sdk": {
+      "default": "./lib/sdk.js"
+    },
+    "./client": {
+      "default": "./lib/client.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "native",
+    "vendor",
+    "sdk-worker.cjs",
+    "assets",
+    "scripts",
+    "cordis.patch.yml",
+    "dsh.plugin.json",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-tool",
+        "@deepseek-ai/dsh-client-ui-plugin-manager"
+      ]
+    }
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "everything",
+    "voidtools",
+    "file-reference",
+    "autocomplete",
+    "find-files",
+    "windows"
+  ],
+  "scripts": {
+    "build": "node build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test \"test/*.test.js\"",
+    "check": "npm run typecheck && npm run build && npm run test",
+    "verify:activate": "node scripts/verify-activation.mjs",
+    "bench": "node scripts/bench-query.mjs",
+    "prepack": "npm run check"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": ">=4.0.2 <5.0.0-0",
+    "@deepseek-ai/dsh-file-reference": ">=0.1.5-rc.3",
+    "@deepseek-ai/dsh-tools": ">=0.1.5-rc.1",
+    "@deepseek-ai/schemastery": ">=3.18.4 <4.0.0-0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.9.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

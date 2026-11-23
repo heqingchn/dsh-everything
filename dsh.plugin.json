@@ -1,0 +1,9 @@
+{
+  "name": "dsh-everything",
+  "description": "Everything-backed @file completion and find_files tool for DeepSeek Harness on Windows",
+  "version": "0.1.0",
+  "entry": {
+    "name": "dsh-everything",
+    "inject": ["agents", "workingDirectory"]
+  }
+}
